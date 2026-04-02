@@ -1,0 +1,264 @@
+# Engineering Commandments
+## Thou Shalt Design for Failure - Systems should expect and gracefully handle failures
+- Level 1: Initial
+    - Error handling is minimal and inconsistent
+    - System failures require manual intervention
+    - Recovery processes are not documented
+    - Little to no consideration of failure scenarios during design
+- Level 2: Repeatable
+    - Basic error handling exists in most components
+    - Some critical services have retry mechanisms
+    - Major failure scenarios are identified but not thoroughly tested
+    - Manual runbooks exist for common failures
+- Level 3: Defined
+    - Consistent error handling strategy across the codebase
+    - Circuit breakers implemented for critical external dependencies
+    - Regular chaos testing in non-production environments
+    - Automated recovery for common failure scenarios
+    - Comprehensive logging of errors with contextual information
+- Level 4: Managed
+    - Metrics track failure rates and recovery effectiveness
+    - Automated chaos testing in production environments
+    - SLOs defined for error rates and recovery times
+    - Regular review of failure patterns drives architectural improvements
+    - Degraded service modes defined and tested for all critical features
+- Level 5: Optimizing
+    - Predictive failure analysis using monitoring data
+    - Self-healing systems with minimal manual intervention
+    - Cross-functional game days simulate complex failure scenarios
+    - Continuous refinement of failure detection and recovery mechanisms
+    - New designs proactively address past failure patterns
+## Thou Shalt Keep It Simple - Complexity breeds bugs that testing may not catch
+- Level 1: Initial
+    - Complex solutions are common even for simple problems
+    - Overengineering is prevalent
+    - Little consideration for maintainability
+    - Code complexity varies widely between developers
+- Level 2: Repeatable
+    - Some guidelines for code simplicity exist
+    - Complexity is considered during code reviews
+    - Some refactoring of overly complex code occurs
+    - Basic static analysis tools identify the most complex code
+- Level 3: Defined
+    - Code complexity metrics are defined and tracked
+    - Simplicity principles are documented and followed
+    - Regular refactoring of complex areas is scheduled
+    - Clear criteria exist for when to use advanced patterns
+- Level 4: Managed
+    - Complexity budgets established for components
+    - Regular reporting on codebase complexity trends
+    - Complexity is a key performance indicator for teams
+    - Technical debt from complexity is quantified and managed
+- Level 5: Optimizing
+    - Simplicity is embedded in the engineering culture
+    - Continuous evaluation of dependencies and features for removal
+    - Industry-leading practices for managing complexity
+    - Team regularly shares simplification success stories
+## Thou Shalt Test Early and Often - Testing is not optional, it's fundamental
+- Level 1: Initial
+    - Manual testing predominates
+    - Test coverage is low and inconsistent
+    - Production and test environments differ significantly
+    - Deployment process is largely manual
+- Level 2: Repeatable
+    - Basic automated tests exist for critical paths
+    - Test environments mimic production in some aspects
+    - Some CI/CD automation for builds and deployments
+    - Major features have defined test plans
+- Level 3: Defined
+    - Comprehensive automated test suite (unit, integration, e2e)
+    - Production-like test environments with similar data and scale
+    - Consistent test coverage across components
+    - Automated deployment pipeline with quality gates
+- Level 4: Managed
+    - Test coverage metrics drive improvements
+    - Canary deployments or feature flags for risk reduction
+    - Testing includes performance, security, and chaos scenarios
+    - Environment parity is measured and maintained
+- Level 5: Optimizing
+    - Test-driven development is standard practice
+    - Zero-downtime deployments with automated rollbacks
+    - Real-time monitoring during deployment affects deployment progression
+    - Continuous testing in production (synthetic transactions, A/B testing)
+## Thou Shalt Build for Observability - You cannot improve what you cannot measure
+- Level 1: Initial
+    - Minimal logging, mostly for errors
+    - Manual checking of logs when issues occur
+    - Few operational metrics collected
+    - No centralized observability solution
+- Level 2: Repeatable
+    - Basic logging standards established
+    - Key metrics defined and collected
+    - Centralized log aggregation
+    - Basic alerting on critical errors
+- Level 3: Defined
+    - Structured logging with correlation IDs across services
+    - Comprehensive metrics covering technical and business aspects
+    - Dashboards for key system components
+    - Tracing implemented for critical paths
+- Level 4: Managed
+    - SLOs defined and measured with appropriate SLIs
+    - Proactive anomaly detection
+    - Business and technical metrics correlated
+    - User experience metrics incorporated
+- Level 5: Optimizing
+    - AI-driven anomaly detection and root cause analysis
+    - Observability drives architectural decisions
+    - Real-time business impact analysis during incidents
+    - Continuous refinement of observability based on incident learnings
+## Thou Shalt Document Thy Intent - Code tells you how, documentation tells you why
+- Level 1: Initial
+    - Minimal documentation
+    - Knowledge primarily held by individuals
+    - Design decisions rarely documented
+    - Documentation quickly becomes outdated
+- Level 2: Repeatable
+    - Basic documentation for major components
+    - Some architectural decisions recorded
+    - Key constraints documented
+    - Knowledge sharing sessions occur occasionally
+- Level 3: Defined
+    - Consistent documentation standards
+    - Architectural Decision Records (ADRs) used
+    - Component ownership clearly defined
+    - Documentation updated as part of development process
+- Level 4: Managed
+    - Documentation quality metrics tracked
+    - Regular reviews of documentation accuracy
+    - Architecture and constraints visualized effectively
+    - Documentation integrated with development artifacts
+- Level 5: Optimizing
+    - Living documentation that updates automatically
+    - Knowledge management integrated into engineering workflow
+    - Decision making process continuously improved
+    - Balance between documentation and code as documentation optimized
+## Thou Shalt Automate Everything Repeatable - All changes must be trackable and reversible
+- Level 1: Initial
+    - Mostly manual processes
+    - Limited documentation of procedures
+    - Automation exists only for basic tasks
+    - High variance in how tasks are performed
+- Level 2: Repeatable
+    - Build and deployment partially automated
+    - Test execution automated but not comprehensive
+    - Infrastructure changes partially scripted
+    - Common operational tasks have automation scripts
+- Level 3: Defined
+    - CI/CD pipeline for all projects
+    - Infrastructure as code for all environments
+    - Automated testing as part of the pipeline
+    - Runbooks automated for common operational tasks
+- Level 4: Managed
+    - Self-service developer platforms
+    - Metrics track automation coverage and effectiveness
+    - Automated verification after deployments
+    - Advanced orchestration across multiple systems
+- Level 5: Optimizing
+    - Zero-touch operations for most scenarios
+    - Self-healing and self-optimizing systems
+    - Continuous improvement of automation based on metrics
+    - Automation platform with reusable components across teams
+## Thou Shalt Secure by Design - Security is not an afterthought
+- Level 1: Initial
+    - Security considerations are often afterthoughts
+    - Minimal security testing
+    - Security practices vary widely across teams
+    - Vulnerabilities addressed reactively
+- Level 2: Repeatable
+    - Basic security guidelines established
+    - Security scanning tools used occasionally
+    - Authentication and authorization implemented
+    - Common vulnerabilities are checked in reviews
+- Level 3: Defined
+    - Security requirements defined for all projects
+    - Regular security testing and scanning
+    - Secure coding standards followed consistently
+    - Security review part of the development process
+- Level 4: Managed
+    - Security metrics tracked and analyzed
+    - Automated security testing in CI/CD
+    - Threat modeling for all new features
+    - Regular security exercises (red team/blue team)
+- Level 5: Optimizing
+    - Security embedded in engineering culture
+    - Continuous security monitoring and verification
+    - Advanced threat detection and prevention
+    - Regular external security audits and penetration testing
+## Thou Shalt Respect Data Consistency - Never trust external data
+- Level 1: Initial
+    - Data validation is inconsistent
+    - Data integrity issues are common
+    - No clear consistency model chosen
+    - Database transactions used inconsistently
+- Level 2: Repeatable
+    - Basic data validation at critical points
+    - Data models are documented
+    - Consistency requirements identified for major features
+    - Critical transactions properly defined
+- Level 3: Defined
+    - Consistent validation at all system boundaries
+    - Clear consistency models chosen and documented
+    - Data contracts established between components
+    - Transaction boundaries and compensating actions defined
+- Level 4: Managed
+    - Data consistency metrics tracked and analyzed
+    - Automated tests verify consistency constraints
+    - Regular data quality audits
+    - Performance impact of consistency mechanisms measured
+- Level 5: Optimizing
+    - Advanced consistency patterns (CQRS, event sourcing) applied appropriately
+    - Automatic detection and resolution of data inconsistencies
+    - Balance between consistency and performance continuously optimized
+    - Data consistency automated in CI/CD pipeline
+## Thou Shalt Separate Concerns - Each component should have one clear responsibility
+- Level 1: Initial
+    - Components have unclear boundaries
+    - High coupling between modules
+    - Responsibilities overlap significantly
+    - Dependencies are hard-coded and numerous
+- Level 2: Repeatable
+    - Some modularization of the codebase
+    - Basic interfaces defined between major components
+    - Some use of dependency injection
+    - Architecture diagrams show intended separation
+- Level 3: Defined
+    - Consistent application of SOLID principles
+    - Clear interfaces between all components
+    - Dependency injection used throughout
+    - Architecture enforces separation of concerns
+- Level 4: Managed
+    - Metrics track coupling and cohesion
+    - Regular architecture reviews verify separation
+    - Performance impact of separation patterns measured
+    - Trade-offs between separation and performance documented
+- Level 5: Optimizing
+    - Advanced patterns (microservices, event-driven) applied appropriately
+    - Continuous refinement of component boundaries
+    - Automated architecture compliance verification
+    - Balance between separation and operational complexity optimized
+## Thou Shalt Plan for Scale - Today's solution should work for tomorrow's load
+- Level 1: Initial
+    - Systems designed primarily for current load
+    - Scaling requires significant rework
+    - Performance testing is rare or basic
+    - Bottlenecks discovered in production
+- Level 2: Repeatable
+    - Basic performance requirements documented
+    - Some components designed for horizontal scaling
+    - Performance testing done for major releases
+    - Known bottlenecks are addressed reactively
+- Level 3: Defined
+    - Scalability requirements defined for all components
+    - Regular performance testing with production-like loads
+    - Horizontal scaling designed into all suitable components
+    - Caching strategy documented and implemented
+- Level 4: Managed
+    - Capacity planning process established
+    - Automated performance testing in CI/CD
+    - Scaling metrics tracked and analyzed
+    - Load shedding and throttling mechanisms in place
+- Level 5: Optimizing
+    - Predictive scaling based on business metrics
+    - Automatic scaling in response to demand
+    - Continuous performance optimization
+    - Cost-efficiency balanced with scalability

@@ -1,0 +1,17 @@
+{
+  "name": "engineering-commandments",
+  "version": "1.0.0",
+  "description": "Evaluate any codebase against 10 Engineering Commandments with 5-level maturity assessment. Generates evidence-backed reports with stack-specific, prioritized actionable improvements.",
+  "author": {
+    "name": "Dhanesh"
+  },
+  "license": "MIT",
+  "keywords": [
+    "engineering",
+    "maturity",
+    "assessment",
+    "commandments",
+    "code-quality",
+    "best-practices"
+  ]
+}
