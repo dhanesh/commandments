@@ -1,0 +1,20 @@
+{
+  "name": "dhanesh-commandments",
+  "owner": {
+    "name": "dhanesh"
+  },
+  "metadata": {
+    "description": "Evaluate any codebase against 10 Engineering Commandments with 5-level maturity assessment.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "engineering-commandments",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/dhanesh/commandments.git"
+      },
+      "description": "Evaluate any codebase against 10 Engineering Commandments with 5-level maturity assessment. Generates evidence-backed reports with stack-specific, prioritized actionable improvements."
+    }
+  ]
+}
