@@ -21,6 +21,21 @@ log_debug() {
   fi
 }
 
+# --- Skill load confirmation (stdout → Claude Code session context) ---
+
+emit_load_confirmation() {
+  local skill_path="$1"
+  # Verify the skill file is readable and has the expected content
+  if [ -r "$skill_path" ] && grep -q "Engineering Commandments" "$skill_path" 2>/dev/null; then
+    local commandment_count
+    commandment_count=$(grep -c "^### [0-9]" "$skill_path" 2>/dev/null || echo "0")
+    # stdout is captured by Claude Code as SessionStart hook additional context
+    echo "Engineering Commandments enforcement active (${commandment_count} commandments loaded from ${skill_path})"
+  else
+    log_error "Skill file unreadable or missing expected content: $skill_path"
+  fi
+}
+
 # --- Top-level ERR trap: always exit 0 (satisfies: U3, TN1 resolution) ---
 trap 'log_error "Hook failed (exit $?)"; exit 0' ERR
 
@@ -55,12 +70,14 @@ main() {
     mkdir -p "$(dirname "$CLAUDE_MD")"
     printf '%s\n\n%s\n' "# Engineering Standards" "@${SKILL_PATH}" > "$CLAUDE_MD"
     log_debug "Created $CLAUDE_MD"
+    emit_load_confirmation "$SKILL_PATH"
     return 0
   fi
 
   # Check if reference already exists (idempotent -- satisfies: RT-1.2 data consistency)
   if grep -q "$MARKER" "$CLAUDE_MD" 2>/dev/null; then
     log_debug "Enforcement skill already referenced in $CLAUDE_MD, skipping"
+    emit_load_confirmation "$SKILL_PATH"
     return 0
   fi
 
@@ -73,6 +90,7 @@ main() {
 EOF
 
   log_debug "Injection complete"
+  emit_load_confirmation "$SKILL_PATH"
 }
 
 main "$@"

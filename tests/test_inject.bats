@@ -9,9 +9,25 @@ setup() {
   TEST_HOME="$(mktemp -d)"
   TEST_PLUGIN_ROOT="$(mktemp -d)"
 
-  # Create the skill file the script expects
+  # Create a mock skill file with expected markers
   mkdir -p "$TEST_PLUGIN_ROOT/skills/enforce-commandments"
-  echo "# Mock skill" > "$TEST_PLUGIN_ROOT/skills/enforce-commandments/SKILL.md"
+  cat > "$TEST_PLUGIN_ROOT/skills/enforce-commandments/SKILL.md" << 'SKILL'
+---
+name: enforce-commandments
+description: Mock skill for testing
+---
+# Engineering Commandments Enforcement
+### 1. Design for Failure
+### 2. Keep It Simple
+### 3. Test Early and Often
+### 4. Build for Observability
+### 5. Document Thy Intent
+### 6. Automate Everything Repeatable
+### 7. Secure by Design
+### 8. Respect Data Consistency
+### 9. Separate Concerns
+### 10. Plan for Scale
+SKILL
 
   export HOME="$TEST_HOME"
   export CLAUDE_PLUGIN_ROOT="$TEST_PLUGIN_ROOT"
@@ -130,10 +146,25 @@ teardown() {
 
 # --- Debug mode (U1, U2) ---
 
-@test "produces no output in normal mode" {
+@test "emits load confirmation in normal mode" {
   run bash "$SCRIPT"
   [ "$status" -eq 0 ]
-  [ -z "$output" ]
+  [[ "$output" == *"Engineering Commandments enforcement active"* ]]
+}
+
+@test "load confirmation includes commandment count" {
+  run bash "$SCRIPT"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"10 commandments loaded"* ]]
+}
+
+@test "no load confirmation when skill content is invalid" {
+  # Replace skill with empty file
+  echo "" > "$CLAUDE_PLUGIN_ROOT/skills/enforce-commandments/SKILL.md"
+  run bash "$SCRIPT"
+  [ "$status" -eq 0 ]
+  # Should NOT emit the confirmation (skill missing expected content)
+  [[ "$output" != *"enforcement active"* ]]
 }
 
 @test "produces debug output when DEBUG=1" {
@@ -152,6 +183,89 @@ teardown() {
   end=$(date +%s)
   elapsed=$(( end - start ))
   [ "$elapsed" -lt 5 ]
+}
+
+# --- Maturity baseline: Key artifacts exist (B2) ---
+
+# --- Enforcement chain: hooks.json → script → CLAUDE.md → SKILL.md ---
+
+@test "hooks.json wires SessionStart to inject script" {
+  local hooks="$BATS_TEST_DIRNAME/../hooks/hooks.json"
+  # Verify SessionStart event exists
+  run python3 -c "
+import json, sys
+h = json.load(open('$hooks'))
+assert 'hooks' in h, 'missing hooks key'
+assert 'SessionStart' in h['hooks'], 'missing SessionStart event'
+events = h['hooks']['SessionStart']
+assert len(events) > 0, 'no SessionStart handlers'
+# Find command referencing our script
+found = False
+for entry in events:
+    for hook in entry.get('hooks', []):
+        if 'inject-claude-md.sh' in hook.get('command', ''):
+            found = True
+assert found, 'inject-claude-md.sh not wired in SessionStart'
+"
+  [ "$status" -eq 0 ]
+}
+
+@test "hooks.json script path resolves to existing file" {
+  local repo_root="$BATS_TEST_DIRNAME/.."
+  [ -x "$repo_root/hooks/scripts/inject-claude-md.sh" ]
+}
+
+@test "SKILL.md exists and has valid YAML frontmatter" {
+  local skill="$BATS_TEST_DIRNAME/../skills/enforce-commandments/SKILL.md"
+  [ -f "$skill" ]
+  # Check frontmatter delimiters
+  head -1 "$skill" | grep -q "^---$"
+  # Check required frontmatter fields
+  grep -q "^name:" "$skill"
+  grep -q "^description:" "$skill"
+}
+
+@test "SKILL.md contains all 10 commandments" {
+  local skill="$BATS_TEST_DIRNAME/../skills/enforce-commandments/SKILL.md"
+  grep -q "Design for Failure" "$skill"
+  grep -q "Keep It Simple" "$skill"
+  grep -q "Test Early" "$skill"
+  grep -q "Observability" "$skill"
+  grep -q "Document Thy Intent" "$skill"
+  grep -q "Automate Everything" "$skill"
+  grep -q "Secure by Design" "$skill"
+  grep -q "Data Consistency" "$skill"
+  grep -q "Separate Concerns" "$skill"
+  grep -q "Plan for Scale" "$skill"
+}
+
+@test "SKILL.md references all three enforcement gates" {
+  local skill="$BATS_TEST_DIRNAME/../skills/enforce-commandments/SKILL.md"
+  grep -q "Specification" "$skill"
+  grep -q "Implementation" "$skill"
+  grep -q "Review" "$skill"
+}
+
+@test "end-to-end: hook produces CLAUDE.md with valid skill reference" {
+  # Use real plugin root so the skill file has actual content
+  local real_root="$BATS_TEST_DIRNAME/.."
+  export CLAUDE_PLUGIN_ROOT="$real_root"
+
+  # Run the hook script (simulates SessionStart)
+  bash "$SCRIPT"
+
+  # Verify CLAUDE.md was created
+  [ -f "$HOME/.claude/CLAUDE.md" ]
+
+  # Extract the @-reference path from CLAUDE.md
+  local ref_path
+  ref_path=$(grep "^@" "$HOME/.claude/CLAUDE.md" | head -1 | sed 's/^@//')
+
+  # Verify the referenced skill file actually exists
+  [ -f "$ref_path" ]
+
+  # Verify it contains the enforcement content
+  grep -q "Engineering Commandments" "$ref_path"
 }
 
 # --- Maturity baseline: Key artifacts exist (B2) ---
