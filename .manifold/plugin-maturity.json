@@ -1,0 +1,422 @@
+{
+  "$schema": "https://raw.githubusercontent.com/dhanesh/manifold/main/install/manifold-structure.schema.json",
+  "schema_version": 3,
+  "feature": "plugin-maturity",
+  "phase": "VERIFIED",
+  "domain": "software",
+  "created": "2026-04-03T12:00:00Z",
+  "constraints": {
+    "business": [
+      {"id": "B1", "type": "invariant", "source": "interview", "challenger": "stakeholder"},
+      {"id": "B2", "type": "goal", "source": "interview", "challenger": "stakeholder", "threshold": {"kind": "deterministic", "ceiling": "3.0"}},
+      {"id": "B3", "type": "invariant", "source": "interview", "challenger": "stakeholder"}
+    ],
+    "technical": [
+      {"id": "T1", "type": "invariant", "source": "interview", "challenger": "technical-reality"},
+      {"id": "T2", "type": "boundary", "source": "interview", "challenger": "technical-reality", "threshold": {"kind": "deterministic", "ceiling": "5000ms"}},
+      {"id": "T3", "type": "goal", "source": "interview", "challenger": "stakeholder"},
+      {"id": "T4", "type": "goal", "source": "interview", "challenger": "stakeholder"},
+      {"id": "T5", "type": "goal", "source": "interview", "challenger": "technical-reality"},
+      {"id": "T6", "type": "invariant", "source": "pre-mortem", "challenger": "technical-reality"}
+    ],
+    "user_experience": [
+      {"id": "U1", "type": "invariant", "source": "interview", "challenger": "stakeholder"},
+      {"id": "U2", "type": "invariant", "source": "interview", "challenger": "technical-reality"},
+      {"id": "U3", "type": "invariant", "source": "pre-mortem", "challenger": "technical-reality"}
+    ],
+    "security": [
+      {"id": "S1", "type": "invariant", "source": "interview", "challenger": "technical-reality"},
+      {"id": "S2", "type": "invariant", "source": "interview", "challenger": "stakeholder"},
+      {"id": "S3", "type": "invariant", "source": "interview", "challenger": "technical-reality"}
+    ],
+    "operational": [
+      {"id": "O1", "type": "goal", "source": "interview", "challenger": "stakeholder"},
+      {"id": "O2", "type": "goal", "source": "interview", "challenger": "technical-reality"},
+      {"id": "O3", "type": "goal", "source": "interview", "challenger": "stakeholder"},
+      {"id": "O4", "type": "goal", "source": "interview", "challenger": "stakeholder"}
+    ]
+  },
+  "tensions": [
+    {
+      "id": "TN1",
+      "type": "trade_off",
+      "between": ["T1", "U3"],
+      "status": "resolved",
+      "decision": "A",
+      "validation_criteria": [
+        "Script uses set -euo pipefail AND always exits 0",
+        "ERR trap logs error details to stderr before exiting 0",
+        "Simulated failures (unset vars, missing files) produce stderr output but exit 0"
+      ],
+      "propagation_effects": []
+    },
+    {
+      "id": "TN2",
+      "type": "trade_off",
+      "between": ["O3", "B3"],
+      "status": "resolved",
+      "decision": "A",
+      "validation_criteria": [
+        "docs/DECISIONS.md exists with at least 3 ADR entries",
+        "CHANGELOG.md and CONTRIBUTING.md exist at repo root",
+        "No docs/ subdirectory beyond DECISIONS.md"
+      ],
+      "propagation_effects": [
+        {"constraint_id": "O3", "effect": "TIGHTENED", "note": "Lightweight format accepted instead of full directory structure; still meets goal criteria"}
+      ]
+    },
+    {
+      "id": "TN3",
+      "type": "resource_tension",
+      "between": ["T3", "B1"],
+      "status": "resolved",
+      "decision": "A",
+      "validation_criteria": [
+        "tests/bats/ exists as a git submodule pointing to bats-core",
+        "bats tests run successfully via ./tests/bats/bin/bats tests/",
+        "No runtime dependencies added (npm, pip, brew)"
+      ],
+      "propagation_effects": [
+        {"constraint_id": "B3", "effect": "TIGHTENED", "note": "Adds tests/bats/ submodule directory to repo structure"}
+      ]
+    },
+    {
+      "id": "TN4",
+      "type": "hidden_dependency",
+      "between": ["O4", "T4"],
+      "status": "resolved",
+      "decision": "B",
+      "validation_criteria": [
+        "Merge to main triggers version bump based on conventional commits",
+        "GitHub release is created automatically with changelog",
+        "Non-main branches do not trigger releases"
+      ],
+      "propagation_effects": [
+        {"constraint_id": "B3", "effect": "TIGHTENED", "note": "Adds release automation config to CI workflow"}
+      ]
+    }
+  ],
+  "anchors": {
+    "required_truths": [
+      {
+        "id": "RT-1",
+        "status": "SATISFIED",
+        "maps_to": ["T1", "U3", "S2"],
+        "depth": 0,
+        "children": [
+          {"id": "RT-1.1", "status": "SATISFIED", "depth": 1},
+          {"id": "RT-1.2", "status": "SATISFIED", "depth": 1},
+          {"id": "RT-1.3", "status": "SATISFIED", "depth": 1}
+        ],
+        "evidence": [
+          {"id": "E-1.1", "type": "content_match", "path": "hooks/scripts/inject-claude-md.sh", "pattern": "set -euo pipefail", "status": "VERIFIED"},
+          {"id": "E-1.2", "type": "content_match", "path": "hooks/scripts/inject-claude-md.sh", "pattern": "trap .* ERR", "status": "VERIFIED"},
+          {"id": "E-1.3", "type": "content_match", "path": "hooks/scripts/inject-claude-md.sh", "pattern": "^main()", "status": "VERIFIED"}
+        ]
+      },
+      {
+        "id": "RT-2",
+        "status": "SATISFIED",
+        "maps_to": ["T3", "T6"],
+        "depth": 0,
+        "children": [
+          {"id": "RT-2.1", "status": "SATISFIED", "depth": 1, "children": [
+            {"id": "RT-2.1.1", "status": "SATISFIED", "depth": 2}
+          ]},
+          {"id": "RT-2.2", "status": "SATISFIED", "depth": 1},
+          {"id": "RT-2.3", "status": "SATISFIED", "depth": 1}
+        ],
+        "evidence": [
+          {"id": "E-2.1", "type": "file_exists", "path": "tests/bats/bin/bats", "status": "VERIFIED"},
+          {"id": "E-2.2", "type": "file_exists", "path": "tests/test_inject.bats", "status": "VERIFIED"},
+          {"id": "E-2.3", "type": "test_passes", "path": "tests/bats/bin/bats", "test_name": "tests/", "status": "VERIFIED"}
+        ]
+      },
+      {
+        "id": "RT-3",
+        "status": "SATISFIED",
+        "maps_to": ["U1", "U2"],
+        "depth": 0,
+        "children": [
+          {"id": "RT-3.1", "status": "SATISFIED", "depth": 1},
+          {"id": "RT-3.2", "status": "SATISFIED", "depth": 1},
+          {"id": "RT-3.3", "status": "SATISFIED", "depth": 1}
+        ],
+        "evidence": [
+          {"id": "E-3.1", "type": "content_match", "path": "hooks/scripts/inject-claude-md.sh", "pattern": "log_error", "status": "VERIFIED"},
+          {"id": "E-3.2", "type": "content_match", "path": "hooks/scripts/inject-claude-md.sh", "pattern": "DEBUG", "status": "VERIFIED"}
+        ]
+      },
+      {
+        "id": "RT-4",
+        "status": "SATISFIED",
+        "maps_to": ["T4", "T5", "O1", "O2", "O4"],
+        "depth": 0,
+        "children": [
+          {"id": "RT-4.1", "status": "SATISFIED", "depth": 1},
+          {"id": "RT-4.2", "status": "SATISFIED", "depth": 1, "children": [
+            {"id": "RT-4.2.1", "status": "SATISFIED", "depth": 2}
+          ]},
+          {"id": "RT-4.3", "status": "SATISFIED", "depth": 1, "children": [
+            {"id": "RT-4.3.1", "status": "SATISFIED", "depth": 2}
+          ]},
+          {"id": "RT-4.4", "status": "SATISFIED", "depth": 1},
+          {"id": "RT-4.5", "status": "SATISFIED", "depth": 1}
+        ],
+        "evidence": [
+          {"id": "E-4.1", "type": "file_exists", "path": ".github/workflows/ci.yml", "status": "VERIFIED"},
+          {"id": "E-4.2", "type": "file_exists", "path": ".github/workflows/release.yml", "status": "VERIFIED"},
+          {"id": "E-4.3", "type": "content_match", "path": ".github/workflows/ci.yml", "pattern": "shellcheck", "status": "VERIFIED"},
+          {"id": "E-4.4", "type": "content_match", "path": ".github/workflows/ci.yml", "pattern": "bats", "status": "VERIFIED"}
+        ]
+      },
+      {
+        "id": "RT-5",
+        "status": "SATISFIED",
+        "maps_to": ["S2", "S3"],
+        "depth": 0,
+        "children": [
+          {"id": "RT-5.1", "status": "SATISFIED", "depth": 1},
+          {"id": "RT-5.2", "status": "SATISFIED", "depth": 1},
+          {"id": "RT-5.3", "status": "SATISFIED", "depth": 1}
+        ],
+        "evidence": [
+          {"id": "E-5.1", "type": "content_match", "path": "hooks/scripts/inject-claude-md.sh", "pattern": "\\$HOME.*-d", "status": "VERIFIED"},
+          {"id": "E-5.2", "type": "content_match", "path": "hooks/scripts/inject-claude-md.sh", "pattern": "CLAUDE_PLUGIN_ROOT.*-d", "status": "VERIFIED"}
+        ]
+      },
+      {
+        "id": "RT-6",
+        "status": "SATISFIED",
+        "maps_to": ["O3"],
+        "depth": 0,
+        "children": [
+          {"id": "RT-6.1", "status": "SATISFIED", "depth": 1},
+          {"id": "RT-6.2", "status": "SATISFIED", "depth": 1},
+          {"id": "RT-6.3", "status": "SATISFIED", "depth": 1}
+        ],
+        "evidence": [
+          {"id": "E-6.1", "type": "file_exists", "path": "docs/DECISIONS.md", "status": "VERIFIED"},
+          {"id": "E-6.2", "type": "file_exists", "path": "CHANGELOG.md", "status": "VERIFIED"},
+          {"id": "E-6.3", "type": "file_exists", "path": "CONTRIBUTING.md", "status": "VERIFIED"}
+        ]
+      }
+    ],
+    "binding_constraint": {
+      "required_truth_id": "RT-4",
+      "reason": "Highest complexity, most constraint coverage (T4, T5, O1, O2, O4), and achieving C6 Level 4 depends entirely on this. Also depends on RT-2 (tests) being satisfied first.",
+      "dependency_chain": ["RT-2", "RT-2.1"]
+    },
+    "recommended_option": "A"
+  },
+  "iterations": [
+    {
+      "number": 1,
+      "phase": "constrain",
+      "timestamp": "2026-04-03T12:15:00Z",
+      "constraints_added": 19,
+      "by_category": {
+        "business": 3,
+        "technical": 6,
+        "user_experience": 3,
+        "security": 3,
+        "operational": 4
+      },
+      "result": "Discovered 19 constraints across all 5 categories via interview and pre-mortem analysis"
+    },
+    {
+      "number": 2,
+      "phase": "tension",
+      "timestamp": "2026-04-03T12:30:00Z",
+      "tensions_found": 4,
+      "tensions_resolved": 4,
+      "by_type": {
+        "trade_offs": 2,
+        "resource_tensions": 1,
+        "hidden_dependencies": 1
+      },
+      "result": "All 4 tensions resolved with user decisions. Key pattern: trap wrapper resolves strict-mode vs safe-exit physical contradiction"
+    },
+    {
+      "number": 3,
+      "phase": "anchor",
+      "timestamp": "2026-04-03T12:45:00Z",
+      "required_truths": 6,
+      "by_status": {
+        "SATISFIED": 0,
+        "PARTIAL": 1,
+        "NOT_SATISFIED": 5,
+        "SPECIFICATION_READY": 0
+      },
+      "solution_options": 3,
+      "selected_option": "A: Script-first bottom-up (harden script → tests → CI → docs)",
+      "result": "6 required truths with recursive decomposition. Binding constraint: RT-4 (CI/CD). Score gap identified: planned 29/30, C6 pushed to L4 to close gap."
+    },
+    {
+      "number": 4,
+      "phase": "generate",
+      "timestamp": "2026-04-03T13:00:00Z",
+      "artifacts_generated": 8,
+      "tests_passed": 17,
+      "shellcheck_warnings": 0,
+      "result": "All 8 artifacts generated in 4 sequential phases. ShellCheck clean. 17/17 bats tests pass. make all succeeds."
+    },
+    {
+      "number": 5,
+      "phase": "verify",
+      "timestamp": "2026-04-03T13:30:00Z",
+      "evidence_verified": 17,
+      "evidence_total": 17,
+      "constraints_satisfied": 19,
+      "constraints_partial": 0,
+      "constraints_total": 19,
+      "gaps": 0,
+      "gaps_blocking": 0,
+      "result": "17/17 evidence items verified. 19/19 constraints satisfied (100%). All tension validation criteria met. G1 and G2 closed with new bats tests (19 total)."
+    }
+  ],
+  "generation": {
+    "option": "A",
+    "timestamp": "2026-04-03T13:00:00Z",
+    "artifacts": [
+      {
+        "path": "hooks/scripts/inject-claude-md.sh",
+        "type": "code",
+        "satisfies": ["RT-1", "RT-3", "RT-5"],
+        "status": "generated",
+        "artifact_class": "substantive"
+      },
+      {
+        "path": "tests/test_inject.bats",
+        "type": "test",
+        "validates": ["T6", "RT-2"],
+        "status": "generated",
+        "artifact_class": "substantive"
+      },
+      {
+        "path": ".github/workflows/ci.yml",
+        "type": "ops",
+        "satisfies": ["RT-4"],
+        "status": "generated",
+        "artifact_class": "substantive"
+      },
+      {
+        "path": ".github/workflows/release.yml",
+        "type": "ops",
+        "satisfies": ["RT-4"],
+        "status": "generated",
+        "artifact_class": "substantive"
+      },
+      {
+        "path": "Makefile",
+        "type": "ops",
+        "satisfies": ["RT-4"],
+        "status": "generated",
+        "artifact_class": "structural"
+      },
+      {
+        "path": "docs/DECISIONS.md",
+        "type": "docs",
+        "satisfies": ["RT-6"],
+        "status": "generated",
+        "artifact_class": "substantive"
+      },
+      {
+        "path": "CHANGELOG.md",
+        "type": "docs",
+        "satisfies": ["RT-6"],
+        "status": "generated",
+        "artifact_class": "substantive"
+      },
+      {
+        "path": "CONTRIBUTING.md",
+        "type": "docs",
+        "satisfies": ["RT-6"],
+        "status": "generated",
+        "artifact_class": "substantive"
+      }
+    ],
+    "coverage": {
+      "constraints_addressed": 16,
+      "constraints_total": 19,
+      "percentage": 84
+    },
+    "reversibility_log": [
+      {"action_step": 1, "description": "Harden inject-claude-md.sh with strict mode and trap", "reversibility": "TWO_WAY"},
+      {"action_step": 2, "description": "Add bats-core git submodule and tests", "reversibility": "TWO_WAY"},
+      {"action_step": 3, "description": "Add GitHub Actions CI/CD workflows", "reversibility": "TWO_WAY"},
+      {"action_step": 4, "description": "Add documentation (ADRs, CHANGELOG, CONTRIBUTING)", "reversibility": "TWO_WAY"}
+    ]
+  },
+  "convergence": {
+    "status": "CONVERGED"
+  },
+  "constraint_graph": {
+    "version": 1,
+    "nodes": {
+      "B1": {"type": "constraint", "category": "business"},
+      "B2": {"type": "constraint", "category": "business"},
+      "B3": {"type": "constraint", "category": "business"},
+      "T1": {"type": "constraint", "category": "technical"},
+      "T2": {"type": "constraint", "category": "technical"},
+      "T3": {"type": "constraint", "category": "technical"},
+      "T4": {"type": "constraint", "category": "technical"},
+      "T5": {"type": "constraint", "category": "technical"},
+      "T6": {"type": "constraint", "category": "technical"},
+      "U1": {"type": "constraint", "category": "user_experience"},
+      "U2": {"type": "constraint", "category": "user_experience"},
+      "U3": {"type": "constraint", "category": "user_experience"},
+      "S1": {"type": "constraint", "category": "security"},
+      "S2": {"type": "constraint", "category": "security"},
+      "S3": {"type": "constraint", "category": "security"},
+      "O1": {"type": "constraint", "category": "operational"},
+      "O2": {"type": "constraint", "category": "operational"},
+      "O3": {"type": "constraint", "category": "operational"},
+      "O4": {"type": "constraint", "category": "operational"},
+      "TN1": {"type": "tension"},
+      "TN2": {"type": "tension"},
+      "TN3": {"type": "tension"},
+      "TN4": {"type": "tension"},
+      "RT-1": {"type": "required_truth"},
+      "RT-2": {"type": "required_truth"},
+      "RT-3": {"type": "required_truth"},
+      "RT-4": {"type": "required_truth"},
+      "RT-5": {"type": "required_truth"},
+      "RT-6": {"type": "required_truth"}
+    },
+    "edges": {
+      "dependencies": [
+        {"from": "T3", "to": "T6", "label": "tests enable hook regression checks"},
+        {"from": "T4", "to": "O1", "label": "CI pipeline implements push/PR checks"},
+        {"from": "T4", "to": "O2", "label": "CI pipeline runs ShellCheck"},
+        {"from": "T1", "to": "S2", "label": "set -u catches unset vars, validation catches empty"},
+        {"from": "T6", "to": "U3", "label": "integration tests protect session stability"},
+        {"from": "T4", "to": "O4", "label": "CI pipeline implements automated releases"},
+        {"from": "RT-1", "to": "RT-3", "label": "trap wrapper enables logging infrastructure"},
+        {"from": "RT-2", "to": "RT-4", "label": "tests must exist before CI can run them"},
+        {"from": "RT-1", "to": "RT-2", "label": "hardened script is what tests verify"}
+      ],
+      "conflicts": [
+        {"from": "T1", "to": "U3", "resolution": "TN1"},
+        {"from": "O3", "to": "B3", "resolution": "TN2"},
+        {"from": "T3", "to": "B1", "resolution": "TN3"},
+        {"from": "O4", "to": "T4", "resolution": "TN4"}
+      ],
+      "satisfies": [
+        {"from": "RT-1", "to": "T1", "label": "strict mode + trap"},
+        {"from": "RT-1", "to": "U3", "label": "ERR trap always exits 0"},
+        {"from": "RT-2", "to": "T3", "label": "bats tests"},
+        {"from": "RT-2", "to": "T6", "label": "hook regression tests"},
+        {"from": "RT-3", "to": "U1", "label": "silent by default"},
+        {"from": "RT-3", "to": "U2", "label": "errors to stderr"},
+        {"from": "RT-4", "to": "T4", "label": "CI pipeline"},
+        {"from": "RT-4", "to": "O1", "label": "push/PR triggers"},
+        {"from": "RT-4", "to": "O2", "label": "ShellCheck in CI"},
+        {"from": "RT-4", "to": "O4", "label": "auto-release"},
+        {"from": "RT-5", "to": "S2", "label": "env var validation"},
+        {"from": "RT-5", "to": "S3", "label": "path safety"},
+        {"from": "RT-6", "to": "O3", "label": "docs suite"}
+      ]
+    }
+  }
+}
