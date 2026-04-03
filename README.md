@@ -29,6 +29,16 @@ Run in any repository. No configuration required.
 
 ## What It Does
 
+This plugin provides **two skills**:
+
+### 1. Always-Active Enforcement (`enforce-commandments`)
+
+Automatically enforces the 10 Engineering Commandments during all development activities. A SessionStart hook injects the enforcement skill into your global `~/.claude/CLAUDE.md` on first use, ensuring it's always active when writing code, planning features, or reviewing PRs.
+
+### 2. Assessment Report (`/commandments`)
+
+On-demand codebase maturity assessment:
+
 1. **Detects the tech stack** by scanning package manifests, configs, and directory structure
 2. **Researches best practices** via WebSearch for the detected stack
 3. **Evaluates each commandment** with deep codebase analysis using Explore agents, citing specific file paths and patterns as evidence
@@ -69,9 +79,16 @@ Reports are written to `claudedocs/commandments-report.md`. The plugin:
 engineering-commandments/
   .claude-plugin/
     plugin.json              # Plugin manifest
+    marketplace.json         # Marketplace installation config
   skills/
-    Commandments/
-      SKILL.md               # /commandments skill (evaluation pipeline)
+    commandments/
+      SKILL.md               # /commandments assessment skill
+    enforce-commandments/
+      SKILL.md               # Always-active enforcement skill
+  hooks/
+    hooks.json               # SessionStart hook config
+    scripts/
+      inject-claude-md.sh    # Auto-injects enforcement into CLAUDE.md
   commandments.md            # Bundled maturity criteria (10 x 5 levels)
   README.md                  # This file
 ```
