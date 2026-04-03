@@ -1,0 +1,349 @@
+{
+  "$schema": "https://raw.githubusercontent.com/dhanesh/manifold/main/install/manifold-structure.schema.json",
+  "schema_version": 3,
+  "feature": "commandments-plugin",
+  "phase": "VERIFIED",
+  "domain": "software",
+  "created": "2026-04-02T00:00:00Z",
+  "constraints": {
+    "business": [
+      {"id": "B1", "type": "invariant", "source": "interview", "challenger": "stakeholder"},
+      {"id": "B2", "type": "invariant", "source": "interview", "challenger": "stakeholder"},
+      {"id": "B3", "type": "goal", "source": "pre-mortem", "challenger": "assumption"},
+      {"id": "B4", "type": "goal", "source": "interview", "challenger": "stakeholder"}
+    ],
+    "technical": [
+      {"id": "T1", "type": "invariant", "source": "interview", "challenger": "technical-reality"},
+      {"id": "T2", "type": "invariant", "source": "interview", "challenger": "stakeholder"},
+      {"id": "T3", "type": "invariant", "source": "interview", "challenger": "technical-reality"},
+      {"id": "T4", "type": "boundary", "source": "interview", "challenger": "stakeholder"},
+      {"id": "T5", "type": "boundary", "source": "interview", "challenger": "stakeholder"},
+      {"id": "T6", "type": "invariant", "source": "interview", "challenger": "stakeholder"},
+      {"id": "T7", "type": "boundary", "source": "interview", "challenger": "stakeholder"}
+    ],
+    "user_experience": [
+      {"id": "U1", "type": "invariant", "source": "interview", "challenger": "stakeholder"},
+      {"id": "U2", "type": "goal", "source": "validated-pre-mortem", "challenger": "assumption"},
+      {"id": "U3", "type": "goal", "source": "interview", "challenger": "stakeholder"},
+      {"id": "U4", "type": "goal", "source": "interview", "challenger": "stakeholder"}
+    ],
+    "security": [
+      {"id": "S1", "type": "invariant", "source": "interview", "challenger": "technical-reality"},
+      {"id": "S2", "type": "invariant", "source": "interview", "challenger": "technical-reality"}
+    ],
+    "operational": [
+      {"id": "O1", "type": "invariant", "source": "interview", "challenger": "technical-reality"},
+      {"id": "O2", "type": "boundary", "source": "interview", "challenger": "technical-reality"},
+      {"id": "O3", "type": "goal", "source": "interview", "challenger": "stakeholder"}
+    ]
+  },
+  "tensions": [
+    {
+      "id": "TN1",
+      "type": "resource_tension",
+      "between": ["T4", "B1"],
+      "status": "resolved",
+      "decision": "A",
+      "validation_criteria": [
+        "Parallel agents spawn for commandment evaluation clusters",
+        "All 10 commandments receive deep analysis regardless of parallelization"
+      ],
+      "propagation_effects": [
+        {"constraint_id": "U2", "effect": "LOOSENED", "note": "Parallel analysis yields more evidence per commandment"}
+      ]
+    },
+    {
+      "id": "TN2",
+      "type": "trade_off",
+      "between": ["T7", "B3"],
+      "status": "resolved",
+      "decision": "A",
+      "validation_criteria": [
+        "Known stacks receive stack-specific actionables",
+        "Unknown stacks receive general best practices clearly labeled as fallback",
+        "Report distinguishes stack-specific vs general recommendations"
+      ],
+      "propagation_effects": [
+        {"constraint_id": "B3", "effect": "TIGHTENED", "note": "Unknown stacks get general advice labeled as fallback — partial satisfaction"}
+      ]
+    },
+    {
+      "id": "TN3",
+      "type": "trade_off",
+      "between": ["T2", "S1"],
+      "status": "resolved",
+      "decision": "A",
+      "validation_criteria": [
+        "WebSearch queries contain only technology names and general pattern names",
+        "No internal file paths, variable names, or proprietary identifiers in search queries"
+      ],
+      "propagation_effects": [
+        {"constraint_id": "T2", "effect": "TIGHTENED", "note": "Queries limited to technology names — broader but still useful results"}
+      ]
+    },
+    {
+      "id": "TN4",
+      "type": "hidden_dependency",
+      "between": ["U1", "T4"],
+      "status": "resolved",
+      "decision": "A",
+      "validation_criteria": [
+        "Skill SKILL.md includes instructions for progress updates during evaluation",
+        "User sees status as each commandment evaluation completes"
+      ],
+      "propagation_effects": []
+    }
+  ],
+  "anchors": {
+    "required_truths": [
+      {
+        "id": "RT-1",
+        "status": "SATISFIED",
+        "maps_to": ["T3", "O1"],
+        "depth": 0,
+        "children": [
+          {"id": "RT-1.1", "status": "SATISFIED", "depth": 1, "children": []},
+          {"id": "RT-1.2", "status": "SATISFIED", "depth": 1, "children": []}
+        ]
+      },
+      {
+        "id": "RT-2",
+        "status": "SATISFIED",
+        "maps_to": ["U1", "T1", "T4", "T2"],
+        "depth": 0,
+        "children": [
+          {"id": "RT-2.1", "status": "SATISFIED", "depth": 1, "children": []},
+          {"id": "RT-2.2", "status": "SATISFIED", "depth": 1, "children": []}
+        ]
+      },
+      {
+        "id": "RT-3",
+        "status": "SATISFIED",
+        "maps_to": ["B1", "B2", "U2", "T6"],
+        "depth": 0,
+        "children": [
+          {"id": "RT-3.1", "status": "SATISFIED", "depth": 1, "children": []}
+        ]
+      },
+      {
+        "id": "RT-4",
+        "status": "SATISFIED",
+        "maps_to": ["T1", "T7"],
+        "depth": 0,
+        "children": [
+          {"id": "RT-4.1", "status": "SATISFIED", "depth": 1, "children": []},
+          {"id": "RT-4.2", "status": "SATISFIED", "depth": 1, "children": []}
+        ]
+      },
+      {
+        "id": "RT-5",
+        "status": "SATISFIED",
+        "maps_to": ["T5", "U3", "U4", "O3"],
+        "depth": 0,
+        "children": [
+          {"id": "RT-5.1", "status": "SATISFIED", "depth": 1, "children": []},
+          {"id": "RT-5.2", "status": "SATISFIED", "depth": 1, "children": []}
+        ]
+      },
+      {
+        "id": "RT-6",
+        "status": "SATISFIED",
+        "maps_to": ["T2", "B3", "S1"],
+        "depth": 0,
+        "children": [
+          {"id": "RT-6.1", "status": "SATISFIED", "depth": 1, "children": []},
+          {"id": "RT-6.2", "status": "SATISFIED", "depth": 1, "children": []}
+        ]
+      },
+      {
+        "id": "RT-7",
+        "status": "SATISFIED",
+        "maps_to": ["T4", "U2", "B1", "B3"],
+        "depth": 0,
+        "children": [
+          {"id": "RT-7.1", "status": "SATISFIED", "depth": 1, "children": []},
+          {"id": "RT-7.2", "status": "SATISFIED", "depth": 1, "children": []},
+          {"id": "RT-7.3", "status": "SATISFIED", "depth": 1, "children": []}
+        ]
+      }
+    ],
+    "binding_constraint": {
+      "required_truth_id": "RT-7",
+      "reason": "Assessment quality depends entirely on knowing what evidence patterns to search for per commandment. Without this, the tool produces shallow/generic assessments — the #1 pre-mortem risk.",
+      "dependency_chain": ["RT-2", "RT-5", "RT-6"]
+    },
+    "recommended_option": "B"
+  },
+  "iterations": [
+    {
+      "number": 1,
+      "phase": "constrain",
+      "timestamp": "2026-04-02T00:00:00Z",
+      "constraints_added": 18,
+      "by_category": {
+        "business": 4,
+        "technical": 7,
+        "user_experience": 4,
+        "security": 2,
+        "operational": 3
+      }
+    },
+    {
+      "number": 2,
+      "phase": "tension",
+      "timestamp": "2026-04-02T00:01:00Z",
+      "tensions_found": 4,
+      "tensions_resolved": 4,
+      "by_type": {
+        "trade_offs": 2,
+        "resource_tensions": 1,
+        "hidden_dependencies": 1
+      }
+    },
+    {
+      "number": 3,
+      "phase": "anchor",
+      "timestamp": "2026-04-02T00:02:00Z",
+      "required_truths": 7,
+      "by_status": {
+        "SATISFIED": 0,
+        "PARTIAL": 1,
+        "NOT_SATISFIED": 5,
+        "SPECIFICATION_READY": 1
+      },
+      "solution_options": 3,
+      "selected_option": "B: Skill + bundled reference data"
+    },
+    {
+      "number": 4,
+      "phase": "generate",
+      "timestamp": "2026-04-02T00:03:00Z",
+      "option": "B",
+      "artifacts_generated": 5,
+      "required_truths_satisfied": 7,
+      "validation": {
+        "plugin_validator": "PASS",
+        "skill_reviewer": "PASS",
+        "issues_fixed": 3
+      }
+    },
+    {
+      "number": 5,
+      "phase": "verify",
+      "timestamp": "2026-04-02T00:04:00Z",
+      "result": "SATISFIED",
+      "constraints_verified": 20,
+      "constraints_satisfied": 20,
+      "gaps": 0,
+      "enhancement_checks": {
+        "genealogy": "PASS",
+        "binding_constraint": "PASS",
+        "propagation": "PASS",
+        "reversibility": "PASS"
+      }
+    }
+  ],
+  "generation": {
+    "option": "B",
+    "timestamp": "2026-04-02T00:03:00Z",
+    "artifacts": [
+      {
+        "path": ".claude-plugin/plugin.json",
+        "type": "code",
+        "satisfies": ["RT-1"],
+        "status": "generated",
+        "artifact_class": "structural"
+      },
+      {
+        "path": "skills/commandments/SKILL.md",
+        "type": "code",
+        "satisfies": ["RT-1", "RT-2", "RT-4", "RT-5", "RT-6", "RT-7"],
+        "status": "generated",
+        "artifact_class": "substantive"
+      },
+      {
+        "path": "commandments.md",
+        "type": "code",
+        "satisfies": ["RT-3"],
+        "status": "generated",
+        "artifact_class": "substantive"
+      },
+      {
+        "path": "README.md",
+        "type": "doc",
+        "satisfies": [],
+        "status": "generated",
+        "artifact_class": "substantive"
+      },
+      {
+        "path": ".gitignore",
+        "type": "code",
+        "satisfies": [],
+        "status": "generated",
+        "artifact_class": "structural"
+      }
+    ],
+    "coverage": {
+      "constraints_addressed": 18,
+      "constraints_total": 18,
+      "percentage": 100
+    }
+  },
+  "convergence": {
+    "status": "CONVERGED"
+  },
+  "constraint_graph": {
+    "version": 1,
+    "nodes": {
+      "B1": {"type": "constraint", "category": "business"},
+      "B2": {"type": "constraint", "category": "business"},
+      "B3": {"type": "constraint", "category": "business"},
+      "B4": {"type": "constraint", "category": "business"},
+      "T1": {"type": "constraint", "category": "technical"},
+      "T2": {"type": "constraint", "category": "technical"},
+      "T3": {"type": "constraint", "category": "technical"},
+      "T4": {"type": "constraint", "category": "technical"},
+      "T5": {"type": "constraint", "category": "technical"},
+      "T6": {"type": "constraint", "category": "technical"},
+      "T7": {"type": "constraint", "category": "technical"},
+      "U1": {"type": "constraint", "category": "user_experience"},
+      "U2": {"type": "constraint", "category": "user_experience"},
+      "U3": {"type": "constraint", "category": "user_experience"},
+      "U4": {"type": "constraint", "category": "user_experience"},
+      "S1": {"type": "constraint", "category": "security"},
+      "S2": {"type": "constraint", "category": "security"},
+      "O1": {"type": "constraint", "category": "operational"},
+      "O2": {"type": "constraint", "category": "operational"},
+      "O3": {"type": "constraint", "category": "operational"},
+      "TN1": {"type": "tension"},
+      "TN2": {"type": "tension"},
+      "TN3": {"type": "tension"},
+      "TN4": {"type": "tension"},
+      "RT-1": {"type": "required_truth"},
+      "RT-2": {"type": "required_truth"},
+      "RT-3": {"type": "required_truth"},
+      "RT-4": {"type": "required_truth"},
+      "RT-5": {"type": "required_truth"},
+      "RT-6": {"type": "required_truth"},
+      "RT-7": {"type": "required_truth"}
+    },
+    "edges": {
+      "dependencies": [
+        {"from": "B3", "to": "T2", "reason": "Stack-specific actionables require WebSearch research"},
+        {"from": "U2", "to": "T4", "reason": "Evidence-backed assessments require deep analysis"},
+        {"from": "T1", "to": "T2", "reason": "Stack identification must precede stack-specific research"},
+        {"from": "T5", "to": "U3", "reason": "History tracking requires consistent output location"},
+        {"from": "RT-2", "to": "RT-7", "reason": "Pipeline orchestration needs evaluation patterns"},
+        {"from": "RT-5", "to": "RT-7", "reason": "Report needs evidence to display"},
+        {"from": "RT-6", "to": "RT-7", "reason": "Research needs context of what was found"}
+      ],
+      "conflicts": [
+        {"from": "T4", "to": "B1", "tension": "TN1"},
+        {"from": "T7", "to": "B3", "tension": "TN2"},
+        {"from": "T2", "to": "S1", "tension": "TN3"},
+        {"from": "U1", "to": "T4", "tension": "TN4"}
+      ],
+      "satisfies": []
+    }
+  }
+}
